@@ -21,17 +21,17 @@ df = pandas.DataFrame(columns = ["Start", "End"])
 video_capture = cv2.VideoCapture(0)
 
 # Load a sample picture and learn how to recognize it.
-obama_image = face_recognition.load_image_file("chantelle.jpg")
-obama_face_encoding = face_recognition.face_encodings(obama_image)[0]
+user1_image = face_recognition.load_image_file("chantelle.jpg")
+user1_face_encoding = face_recognition.face_encodings(user1_image)[0]
 
 # Load a second sample picture and learn how to recognize it.
-biden_image = face_recognition.load_image_file("biden.jpg")
-biden_face_encoding = face_recognition.face_encodings(biden_image)[0]
+user2_image = face_recognition.load_image_file("biden.jpg")
+user2_face_encoding = face_recognition.face_encodings(user2_image)[0]
 
 # Create arrays of known face encodings and their names
 known_face_encodings = [
-    obama_face_encoding,
-    biden_face_encoding
+    user1_face_encoding,
+    user2_face_encoding
 ]
 known_face_names = [
     "Chantelle Hobbs",
@@ -43,8 +43,16 @@ face_locations = []
 face_encodings = []
 face_names = []
 process_this_frame = True
+tempNames = []
+cnt = 0;
 
 while True:
+    # Reset the tempNames list after iterating a lot
+    if(cnt == 100):
+        tempNames = []
+        cnt = 0; # Reset the counter
+    cnt += 1;
+
     # Reading frame(image) from video 
     check, frame = video_capture.read() 
   
@@ -144,6 +152,22 @@ while True:
             best_match_index = np.argmin(face_distances)
             if matches[best_match_index]:
                 name = known_face_names[best_match_index]
+                
+                nameFound = False;
+                if len(tempNames) == 0:  # If the list of names detected is empty
+                    tempNames += [name];
+                else:
+                    for i in range(0, len(tempNames)):  # Checks to see if the list contains a detected name
+                        if(tempNames[i] == name):
+                            nameFound = True;
+                            break;
+
+                if(nameFound == False):     # If the name was not previously detected
+                    with open('facesDetected.txt', 'a') as f:
+                        now = datetime.now() # current date and time
+                        currTime = now.strftime("%H:%M:%S")
+                        f.write(name + " " + currTime)
+                        f.write('\n')
 
             face_names.append(name)
 
