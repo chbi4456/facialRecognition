@@ -3,7 +3,7 @@
   
 # importing OpenCV
 import cv2
-#Facial Recog
+# Facial Recog
 import face_recognition
 # importing datetime class from datetime library 
 import numpy as np
@@ -16,6 +16,8 @@ static_back = None
 motion_list = [ None, None ] 
 #trigger
 trigger = 0
+# Loop counter
+loop = 0
 
 ## Initialize for facial recognition
 # Load a sample picture and learn how to recognize it.
@@ -100,6 +102,11 @@ while True:
   
     # Displaying color frame with contour of motion of object 
     cv2.imshow("Color Frame", frame) 
+
+    loop += 1
+    if loop > 500:
+        static_back = None
+        loop = 0
   
     # if q entered whole process will stop 
     # Hit 'q' on the keyboard to quit!
@@ -183,8 +190,6 @@ while trigger > 10:
     # Hit 'q' on the keyboard to quit!
     if cv2.waitKey(1) & 0xFF == ord('q'):
         break
-
-
 
 ## END CODE
 video.release()
