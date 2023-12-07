@@ -7,6 +7,8 @@ import cv2
 import face_recognition
 # importing datetime class from datetime library 
 import numpy as np
+import pandas
+from datetime import datetime 
 
 ## Initialize for motion detection
 # Assigning our static_back to None 
@@ -20,18 +22,24 @@ trigger = 0
 # Load a sample picture and learn how to recognize it.
 user_image = face_recognition.load_image_file("jonny.jpeg")
 user_face_encoding = face_recognition.face_encodings(user_image)[0]
+user_image2 = face_recognition.load_image_file("chantelle.jpg")
+user_face_encoding2 = face_recognition.face_encodings(user_image2)[0]
 # Create arrays of known face encodings and their names
 known_face_encodings = [
     user_face_encoding,
+    user_face_encoding2
 ]
 known_face_names = [
     "Jonathan Kleppinger",
+    "Chantelle Hobbs"
 ]
+
 # Initialize some variables
 face_locations = []
 face_encodings = []
 face_names = []
 process_this_frame = True
+tempNames = [] # Stores the names of the faces recognized
 
 
 # Capturing video 
@@ -39,6 +47,8 @@ video = cv2.VideoCapture(0)
   
 # Infinite while loop to treat stack of image as video 
 while True: 
+    tempNames = [] # Reset the names detected when only motion detecting.
+
     # Reading frame(image) from video 
     check, frame = video.read() 
   
@@ -120,6 +130,22 @@ while trigger > 10:
             best_match_index = np.argmin(face_distances)
             if matches[best_match_index]:
                 name = known_face_names[best_match_index]
+
+                nameFound = False;
+                if len(tempNames) == 0:  # If the list of names detected is empty
+                    tempNames += [name];
+                else:
+                    for i in range(0, len(tempNames)):  # Checks to see if the list contains a detected name
+                        if(tempNames[i] == name):
+                            nameFound = True;
+                            break;
+
+                if(nameFound == False):     # If the name was not previously detected
+                    with open('facesDetected.txt', 'a') as f:
+                        now = datetime.now() # current date and time
+                        currTime = now.strftime("%d/%m/%Y %H:%M:%S")
+                        f.write(name + " " + currTime)
+                        f.write('\n')
 
             face_names.append(name)
 
