@@ -7,7 +7,6 @@ import cv2
 import face_recognition
 # importing datetime class from datetime library 
 import numpy as np
-import pandas
 from datetime import datetime 
 
 ## Initialize for motion detection
@@ -20,18 +19,28 @@ trigger = 0
 
 ## Initialize for facial recognition
 # Load a sample picture and learn how to recognize it.
-user_image = face_recognition.load_image_file("jonny.jpeg")
-user_face_encoding = face_recognition.face_encodings(user_image)[0]
+
+user_image1 = face_recognition.load_image_file("jonny.jpeg")
+user_face_encoding1 = face_recognition.face_encodings(user_image1)[0]
+
 user_image2 = face_recognition.load_image_file("chantelle.jpg")
 user_face_encoding2 = face_recognition.face_encodings(user_image2)[0]
+
+user_image3 = face_recognition.load_image_file("brett.jpg")
+user_face_encoding3 = face_recognition.face_encodings(user_image3)[0]
+
 # Create arrays of known face encodings and their names
 known_face_encodings = [
-    user_face_encoding,
-    user_face_encoding2
+    user_face_encoding1,
+    user_face_encoding2,
+    user_face_encoding3,
+
+
 ]
 known_face_names = [
     "Jonathan Kleppinger",
-    "Chantelle Hobbs"
+    "Chantelle Hobbs",
+    "Bread"    
 ]
 
 # Initialize some variables
